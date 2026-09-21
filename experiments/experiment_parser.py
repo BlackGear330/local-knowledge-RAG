@@ -1,3 +1,7 @@
+# Эксперимент 2 — сохранение токенов markdown-it
+# Статус: ЗАВЕРШЁН
+# Результат: исследована структура токенов Markdown и их type/content/level
+
 from markdown_it import MarkdownIt
 from pathlib import Path
 import json

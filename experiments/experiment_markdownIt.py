@@ -1,3 +1,7 @@
+# Эксперимент 3 — визуальный вывод токенов
+# Статус: ЗАВЕРШЁН
+# Результат: наглядно исследована вложенность токенов Markdown через level
+
 from markdown_it import MarkdownIt
 from pathlib import Path
 
