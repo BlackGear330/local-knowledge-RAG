@@ -11,3 +11,7 @@ Doc/
 # Python cache
 __pycache__/
 *.pyc
+
+# Base
+
+qdrant_local_db/

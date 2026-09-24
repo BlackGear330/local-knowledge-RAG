@@ -5,7 +5,6 @@ md = MarkItDown()
 
 
 d = Path('Doc')
-o = Path('Doc/Обработано')
 m = Path('Doc/Md')
 
 
