@@ -7,7 +7,10 @@ client = OpenAI(
     api_key='LM'
 )
 
-content = [chunk.page_content for chunk in all_chunks]
+content = [
+    chunk.page_content + "\n" + str(chunk.metadata)
+    for chunk in all_chunks
+]
 
 response = client.embeddings.create(
     model = 'text-embedding-qwen3-embedding-0.6b',

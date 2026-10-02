@@ -43,7 +43,6 @@ for i in m.glob('*.md'):
     for i in main_output:
         i.metadata.update(result_dict_metadata)
 
-# TODO: проверить оптимальные chunk_size и chunk_overlap на этапе embeddings + retrieval
     recursive_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=100,
