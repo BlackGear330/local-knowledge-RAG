@@ -1,6 +1,8 @@
+import openai
 from openai import OpenAI
 from qdrant_client import QdrantClient
 from promt import system_prompt
+import sys
 
 
 prep = input("Введите ваш вопрос: ").strip()
@@ -10,10 +12,15 @@ client = OpenAI(
     api_key='LM'
 )
 
-response = client.embeddings.create(
-    model = 'text-embedding-qwen3-embedding-0.6b',
-    input= prep
-)
+try:
+    response = client.embeddings.create(
+        model = 'text-embedding-qwen3-embedding-0.6b',
+        input= prep
+    )
+except openai.OpenAIError:
+    print("LM Studio недоступен")
+    sys.exit(1)
+
 
 vector = response.data[0].embedding
 
@@ -33,7 +40,7 @@ for hit in search_collection:
 
 context = "\n---\n".join(context_chunk)
 
-system_prompt = system_prompt.format(context=context)
+formatted_prompt = system_prompt.format(context=context)
 
 metadata_chunk = []
 for hit in search_collection:
@@ -41,16 +48,19 @@ for hit in search_collection:
         metadata_chunk.append(hit.payload['metadata'])
 
 
-
-reply = client.chat.completions.create(
-    model = "google/gemma-4-12b-qat",
-    messages = [
-        {"role": "system", "content": system_prompt },
-        {"role": "user", "content": prep }
-    ],
-    max_tokens=2048,
-    extra_body={"chat_template_kwargs": {"enable_thinking": False}},
-)
+try:
+    reply = client.chat.completions.create(
+        model = "google/gemma-4-12b-qat",
+        messages = [
+            {"role": "system", "content": formatted_prompt },
+            {"role": "user", "content": prep }
+        ],
+        max_tokens=2048,
+        extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+    )
+except openai.OpenAIError:
+    print("Модель недоступна")
+    sys.exit(1)
 
 print("\nОтвет модели:")
 print(reply.choices[0].message.content)
@@ -80,3 +90,6 @@ print(f"Tags: {tags}")
 print(f"Dept: {', '.join(depts)}")
 for hit in search_collection:
     print(hit.score)
+
+client_base.close()
+client.close()
